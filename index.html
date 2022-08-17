@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Pdam</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="wrapper">
+        <div class="header">
+          <h2>Penghitung Tagihan PDAM</h2>
+        </div>
+        <form id="form" class="form">
+          <div class="wrapper-input">
+            <label class="label-input" for="kmSebelum">KM Sebelumnya</label>
+            <input id="kmSebelum" type="number" class="input" />
+          </div>
+          <div class="wrapper-input">
+            <label class="label-input" for="kmSekarang">KM Sekarang</label>
+            <input id="kmSekarang" type="number" class="input" />
+          </div>
+          <div class="wrapper-button">
+            <button id="submit" class="tombol"><strong>HITUNG</strong></button>
+          </div>
+        </form>
+        <div class="form">
+          <h3 class="header-detail">Detail :</h3>
+          <ul>
+            <li>
+              <strong>Tagihan</strong>: Rp
+              <span style="color: red; font-size: xx-large" id="tagihan">0</span>
+            </li>
+            <li><strong>Pemakaian</strong>: <span id="pemakaian">0</span> KM</li>
+          </ul>
+        </div>
+        <div class="footer">
+          <h6>Powered By <strong>PDAM Tirta Kencana Samarinda</strong> </h6>
+        </div>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById('form');
+      form.addEventListener("submit", (e) => {
+        e.preventDefault()
+        const kmSebelum = e.target[0].value;
+        const kmSekarang = e.target[1].value;
+        const result = calculateBillWater(kmSekarang, kmSebelum)
+        document.getElementById("pemakaian").innerText = result.pemakaian;
+        document.getElementById("tagihan").innerText = result.tagihan;
+        // document.getElementById('kmSebelum').value = 0;
+        // document.getElementById('kmSekarang').value = 0;
+      });
+
+      // rumus air
+      const calculateBillWater = (kmSekarang, kmSebelum) => {
+        const pemakaian = kmSekarang - kmSebelum;
+
+        // biaya lain lain
+        const admin = 12000;
+        const retribusi = 30000;
+
+        // biaya per volume
+        const biayaVolume10 = 4067;
+        const biayaVolume20 = 6100;
+        const biayaVolume30 = 11303;
+        const biayaVolume40 = 11832;
+        const biayaVolumeLebih40 = 14420;
+      
+        let tagihan = 0;
+
+        if(pemakaian <= 0){
+          tagihan = 0;
+        }else if(pemakaian  <= 10){
+          tagihan = pemakaian * biayaVolume10 + retribusi + admin;
+        }else if(pemakaian <= 20 && pemakaian > 10){
+          const a = 10 * biayaVolume10;
+          const b = (pemakaian - 10) * biayaVolume20;
+          tagihan = a + b + retribusi + admin;
+        }else if(pemakaian <= 30 && pemakaian > 20){
+          const a = 10 * biayaVolume10;
+          const b = 10 * biayaVolume20;
+          const c = (pemakaian - 20) * biayaVolume30;
+          tagihan = a + b + c + retribusi + admin;
+        }else if(pemakaian <= 40 && pemakaian > 30){
+          const a = 10 * biayaVolume10;
+          const b = 10 * biayaVolume20;
+          const c = 10 * biayaVolume30;
+          const d = (pemakaian - 30) * biayaVolume40;
+          tagihan = a + b + c + d + retribusi + admin;
+        }else if(pemakaian > 40){
+          const a = 10 * biayaVolume10;
+          const b = 10 * biayaVolume20;
+          const c = 10 * biayaVolume30;
+          const d = 10 * biayaVolume40;
+          const e = (pemakaian - 40) * biayaVolumeLebih40;
+          tagihan = a + b + c + d + e + retribusi + admin;
+        }
+
+        return {
+          pemakaian,
+          tagihan
+        }
+      }
+    </script>
+  </body>
+</html>
